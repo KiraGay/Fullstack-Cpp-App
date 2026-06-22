@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Fullstack C++ App</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; width: 400px;}
+        button { background-color: #007acc; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; font-weight: bold; margin-top: 10px;}
+        button:hover { background-color: #005f9e; }
+        input { padding: 10px; width: 80%; border: 1px solid #ccc; border-radius: 5px; }
+        .hasil { margin-top: 20px; padding: 15px; border: 1px dashed #ccc; background-color: #fafafa; }
+        hr { border: 1px solid #eee; margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Uji Coba POST Request</h2>
+        <p>Ketik namamu, JS akan mengirimkannya ke C++!</p>
+        
+        <input type="text" id="inputNama" placeholder="Masukkan nama kamu di sini...">
+        <button onclick="kirimData()">Kirim ke Backend C++</button>
+        
+        <div id="hasilPost" class="hasil">Menunggu balasan dari server...</div>
+    </div>
+
+    <script>
+        function kirimData() {
+            // Mengambil teks dari kolom input
+            const namaKetik = document.getElementById('inputNama').value;
+            
+            // Mencegah pengiriman jika kolom kosong
+            if(!namaKetik) {
+                alert("Isi nama dulu dong!");
+                return;
+            }
+
+            // Mengirim data ke C++ via POST
+            fetch('http://127.0.0.1:8080/api/kirim', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // Memberi tahu C++ bahwa ini data JSON
+                },
+                body: JSON.stringify({ nama: namaKetik }) // Mengubah objek JS menjadi string JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('hasilPost').innerHTML = 
+                    `<strong style="color: green;">Status: ${data.status}</strong> <br> ${data.pesan}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('hasilPost').innerHTML = '<span style="color:red;">Gagal terhubung!</span>';
+            });
+        }
+    </script>
+</body>
+</html>
